@@ -8,7 +8,10 @@
 
 So that we can get a quick and efficient start, please download intelliJ from https://www.jetbrains.com/idea/download/
 
-Then in your IdeaProjects clone this repo: 
+Then in your IdeaProjects directory clone this repo: https://github.com/mpatt3970/denver-droids-kotlin
+
+Please ensure you can build and run the tests. Feel free to post questions to the Meetup website.
+No dumb questions! Other people probably have the same issues.
 
 #### Contributions
 
