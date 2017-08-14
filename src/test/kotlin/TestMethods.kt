@@ -286,4 +286,163 @@ class TestMethods {
         assertEquals(
                 expected, doSomethingStrangeWithCollection(argument), "The function 'doSomethingStrangeWithCollection' should do at least something with a collection:")
     }
+
+    internal val drivers = (1..10).map { Driver("Driver$it") }
+    internal val passengers = (1..10).map { Passenger("Passenger$it") }
+
+    internal fun driver(i: Int) = drivers.getOrNull(i - 1) ?: throw IllegalArgumentException("Invalid driver index: $i")
+    internal fun passenger(i: Int) = passengers.getOrNull(i - 1) ?: throw IllegalArgumentException("Invalid passenger index: $i")
+
+    internal fun drivers(range: IntRange) = range.map(this::driver)
+    internal fun drivers(vararg indices: Int) = indices.map(this::driver)
+    internal fun passengers(range: IntRange) = range.map(this::passenger)
+    internal fun passengers(vararg indices: Int) = indices.map(this::passenger)
+
+    internal fun taxiPark(driverIndexes: IntRange, passengerIndexes: IntRange, orders: List<TaxiOrder>) =
+            TaxiPark(drivers(driverIndexes), passengers(passengerIndexes), orders.toList())
+
+    internal fun taxiPark(driverIndexes: IntRange, passengerIndexes: IntRange, vararg orders: TaxiOrder) =
+            taxiPark(driverIndexes, passengerIndexes, orders.toList())
+
+    internal fun taxiOrder(driverIndex: Int, vararg passengerIndexes: Int, duration: Int = 10, distance: Double = 10.0, discount: Double? = null) =
+            TaxiOrder(driver(driverIndex), passengers(*passengerIndexes), duration, distance, discount)
+
+    @Test fun testFakeDrivers() {
+        val park = taxiPark(driverIndexes = 1..3, passengerIndexes = 1..2,
+                orders = listOf(taxiOrder(driverIndex = 1, passengerIndexes = 1), taxiOrder(1, 2)))
+        assertEquals(drivers(2, 3).toSet(), park.findFakeDrivers())
+    }
+
+    @Test fun testNoFakeDrivers() {
+        val park = taxiPark(1..2, 1..2, taxiOrder(1, 1), taxiOrder(2, 2))
+        assertTrue(park.findFakeDrivers().isEmpty())
+    }
+
+    @Test fun testFaithfulPassengersMoreThanMin() {
+        val park = taxiPark(1..1, 1..2,
+                taxiOrder(1, 1), taxiOrder(1, 2), taxiOrder(1, 2))
+        assertEquals(passengers(2), park.findFaithfulPassengers(1))
+    }
+
+    @Test fun testNoFaithfulPassengers() {
+        val park = taxiPark(1..1, 1..2,
+                taxiOrder(1, 1), taxiOrder(1, 2))
+        assertTrue(park.findFaithfulPassengers(1).isEmpty())
+    }
+
+    @Test fun testFaithfulPassenger() {
+        val park = taxiPark(1..2, 1..3,
+                taxiOrder(1, 2), taxiOrder(1, 2), taxiOrder(2, 2), taxiOrder(2, 2))
+        assertEquals(passengers(2), park.findFaithfulPassengers(3))
+    }
+
+    @Test fun testFaithfulPassengers() {
+        val park = taxiPark(1..3, 1..5,
+                taxiOrder(1, 1), taxiOrder(2, 1), taxiOrder(1, 4), taxiOrder(3, 4), taxiOrder(1, 5), taxiOrder(2, 5), taxiOrder(2, 2))
+        assertEquals(passengers(1, 4, 5), park.findFaithfulPassengers(1))
+    }
+
+    @Test fun testOnlyPair() {
+        val park = taxiPark(1..1, 1..1, taxiOrder(1, 1), taxiOrder(1, 1))
+        assertEquals(passengers(1), park.findFrequentPassengers(driver(1)))
+    }
+
+    @Test fun testFrequentPassengers() {
+        val park = taxiPark(1..2, 1..4, taxiOrder(1, 1), taxiOrder(1, 1), taxiOrder(1, 1, 3), taxiOrder(1, 3), taxiOrder(1, 2), taxiOrder(2, 2))
+        assertEquals(passengers(1, 3), park.findFrequentPassengers(driver(1)))
+    }
+
+    @Test fun testNoFrequentPassengers() {
+        val park = taxiPark(1..2, 1..4, taxiOrder(1, 1), taxiOrder(1, 1), taxiOrder(1, 1, 3), taxiOrder(1, 3), taxiOrder(1, 2), taxiOrder(2, 2))
+        assertTrue(park.findFrequentPassengers(driver(2)).isEmpty())
+    }
+
+    @Test fun testSmartPassengers() {
+        val park = taxiPark(1..2, 1..2, taxiOrder(1, 1, discount = 0.1), taxiOrder(2, 2))
+        assertEquals(passengers(1).toSet(), park.findSmartPassengers())
+    }
+
+    @Test fun testMoreThenMajorityDiscountTrips() {
+        val park = taxiPark(1..1, 1..1, taxiOrder(1, 1, discount = 0.1), taxiOrder(1, 1, discount = 0.2), taxiOrder(1, 1))
+        assertEquals(passengers(1).toSet(), park.findSmartPassengers())
+    }
+
+    @Test fun testLessThenMajorityDiscountTrips() {
+        val park = taxiPark(1..1, 1..1, taxiOrder(1, 1), taxiOrder(1, 1), taxiOrder(1, 1, discount = 0.2), taxiOrder(1, 1))
+        assertTrue(park.findSmartPassengers().isEmpty())
+    }
+
+    @Test fun testNoDurationInfo() {
+        assertTrue(taxiPark(1..1, 1..1).findTheMostFrequentTripDurations().isEmpty())
+    }
+
+    @Test fun testSeveralFrequent() {
+        val park = taxiPark(1..1, 1..1, taxiOrder(1, 1, duration = 11), taxiOrder(1, 1, duration = 12),
+                taxiOrder(1, 1, duration = 25), taxiOrder(1, 1, duration = 26))
+        assertEquals(listOf(10..19, 20..29), park.findTheMostFrequentTripDurations())
+    }
+
+    @Test fun testTheMostFrequentTripDuration() {
+        val park = taxiPark(1..3, 1..5, taxiOrder(1, 1, duration = 10), taxiOrder(3, 4, duration = 30),
+                taxiOrder(1, 2, duration = 20), taxiOrder(2, 3, duration = 30))
+        assertEquals(listOf(30..39), park.findTheMostFrequentTripDurations())
+    }
+
+    @Test fun testParetoPrincipleSucceeds() {
+        // 20% of the drivers: 1
+        // the profit of the first driver: 500
+        // the profit of all: 620
+        // 500 >= 0.8 * 620 = 496
+        val park = taxiPark(1..8, 1..8, taxiOrder(1, 1, duration = 250, distance = 250.0),
+                taxiOrder(2, 2), taxiOrder(3, 3), taxiOrder(4, 4), taxiOrder(5, 5), taxiOrder(6, 6), taxiOrder(7, 7))
+        assertTrue(park.checkParetoPrinciple())
+    }
+
+    @Test fun testRandomDriverIsTheBest() {
+        // the same as before, the best driver is now #5
+        val park = taxiPark(1..8, 1..8, taxiOrder(5, 1, duration = 250, distance = 250.0),
+                taxiOrder(2, 2), taxiOrder(3, 3), taxiOrder(4, 4), taxiOrder(6, 6), taxiOrder(7, 7), taxiOrder(8, 8))
+        assertTrue(park.checkParetoPrinciple())
+    }
+
+    @Test fun testSeveralBestDrivers() {
+        // 20% of the drivers: 1, 10
+        // the profit of 1, 10: 800
+        // the profit of all: 940
+        // 800 >= 0.8 * 940 = 752
+        val park = taxiPark(1..10, 1..10,
+                taxiOrder(1, 1, duration = 200, distance = 200.0),
+                taxiOrder(10, 10, duration = 200, distance = 200.0),
+                taxiOrder(2, 2), taxiOrder(3, 3), taxiOrder(4, 4), taxiOrder(5, 5), taxiOrder(6, 6), taxiOrder(7, 7), taxiOrder(8, 8))
+        assertTrue(park.checkParetoPrinciple())
+    }
+
+    @Test fun testNotEnoughDrivers() {
+        // the first driver doesn't make up 20%
+        val park = taxiPark(1..4, 1..4, taxiOrder(1, 1, duration = 110, distance = 110.0),
+                taxiOrder(2, 2), taxiOrder(3, 3), taxiOrder(4, 4))
+        assertFalse(park.checkParetoPrinciple())
+    }
+
+    @Test fun testParetoPrincipleFails() {
+        // 20% of the drivers: 1
+        // the profit of the first driver: 220
+        // the profit of all: 300
+        // 220 < 0.8 * 300 = 240
+        val park = taxiPark(1..5, 1..5, taxiOrder(1, 1, duration = 110, distance = 110.0),
+                taxiOrder(2, 2), taxiOrder(3, 3), taxiOrder(4, 4), taxiOrder(5, 5))
+        assertFalse(park.checkParetoPrinciple())
+    }
+
+    @Test fun testExactly80Percent() {
+        // 20% of the drivers: 1
+        // the profit of the first driver: 240
+        // the profit of all: 300
+        // 240 >= 0.8 * 300 = 240
+
+        // tip: Use BigDecimal instead of double for comparison
+        val park = taxiPark(1..5, 1..5, taxiOrder(1, 1, duration = 120, distance = 120.0),
+                taxiOrder(2, 2), taxiOrder(3, 3), taxiOrder(4, 4))
+        assertFalse(park.checkParetoPrinciple())
+    }
 }
