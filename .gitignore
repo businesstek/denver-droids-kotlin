@@ -1,4 +1,5 @@
 *.iws
+*.iml
 .ds_store
 out/
 .idea_modules/
