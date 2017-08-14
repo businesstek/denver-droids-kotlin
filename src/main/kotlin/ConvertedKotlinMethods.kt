@@ -230,3 +230,13 @@ fun TaxiPark.findTheMostFrequentTripDurations(): List<IntRange> {
 fun TaxiPark.checkParetoPrinciple(): Boolean {
     TODO()
 }
+
+/**
+ * Section 4
+ *
+ * There is no Section 4.
+ *
+ * If you want to continue, clone this git repo and follow the lessons here "student/advanced/src/main..."
+ *
+ * https://github.com/JetBrains/kotlin-workshop
+ */
