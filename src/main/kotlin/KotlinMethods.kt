@@ -37,87 +37,86 @@ data class City(val name: String)
 // Return a set containing all the customers of this shop
 // Hint: List 'to' a Set
 fun Shop.getSetOfCustomers(): Set<Customer> {
-    TODO()
-//    return this.customers
+    return this.customers.toSet()
 }
 
 // Return the set of cities the customers are from
-// Hint: Filter map
+// Hint: Map
 fun Shop.getCitiesCustomersAreFrom(): Set<City> {
-    TODO()
+    return this.customers.map { it.city }.toSet()
 }
 
 // Return a list of the customers who live in the given city
-// Hint: Filter map
+// Hint: Filter
 fun Shop.getCustomersFrom(city: City): List<Customer> {
-    TODO()
+    return this.customers.filter { it.city == city }
 }
 
 // Return true if the customer is from the given city
 // Hint: Predicates
 fun Customer.isFrom(city: City): Boolean {
-    TODO()
+    return this.city == city
 }
 
 // Return true if all customers are from the given city
 // Hint: Predicates
 fun Shop.checkAllCustomersAreFrom(city: City): Boolean {
-    TODO()
+    return this.customers.all { it.isFrom(city) }
 }
 
 // Return true if there is at least one customer from the given city
 // Hint: Predicates
 fun Shop.hasCustomerFrom(city: City): Boolean {
-    TODO()
+    return this.customers.any { it.isFrom(city) }
 }
 
 // Return the number of customers from the given city
 // Hint: Predicates
 fun Shop.countCustomersFrom(city: City): Int {
-    TODO()
+    return this.customers.count { it.isFrom(city) }
 }
 
 // Return a customer who lives in the given city, or null if there is none
 // Hint: Predicates
 fun Shop.findAnyCustomerFrom(city: City): Customer? {
-    TODO()
+    return this.customers.first { it.isFrom(city) }
 }
 
 // Return all products that were ordered by customer
 // Hint: Flat map
 val Customer.orderedProducts: Set<Product> get() {
-    TODO()
+    return this.orders.flatMap { it.products }.toSet()
 }
 
 // Return all products that were ordered by at least one customer
 // Hint: Flat map
 val Shop.allOrderedProducts: Set<Product> get() {
-    TODO()
+    return this.customers.flatMap { it.orderedProducts }.toSet()
 }
 
 // Return a customer whose order count is the highest among all customers
 // Hint: Max/Min
 fun Shop.getCustomerWithMaximumNumberOfOrders(): Customer? {
-    TODO()
+    return this.customers.maxBy { it.orders.size }
 }
 
 // Return the most expensive product which has been ordered
 // Hint: Max/Min
 fun Customer.getMostExpensiveOrderedProduct(): Product? {
-    TODO()
+    return this.orderedProducts.maxBy { it.price }
 }
 
 // Return a list of customers, sorted by the ascending number of orders they made
 // Hint: Sort
 fun Shop.getCustomersSortedByNumberOfOrders(): List<Customer> {
-    TODO()
+    return this.customers.sortedBy { it.orders.size }
 }
 
 // Return the sum of prices of all products that a customer has ordered.
 // Note: a customer may order the same product for several times.
 // Hint: Sum
 fun Customer.getTotalOrderPrice(): Double {
-    TODO()
+    return this.orderedProducts.sumByDouble { it.price }
 }
 
 // Find the correspondence between customers and their names (as a list or pairs)
