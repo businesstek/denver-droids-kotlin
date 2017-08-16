@@ -140,7 +140,14 @@ fun Shop.groupCustomersByCity(): Map<City, List<Customer>> {
 // Return customers who have more undelivered orders than delivered
 // Hint: Partition
 fun Shop.getCustomersWithMoreUndeliveredOrdersThanDelivered(): Set<Customer> {
-    TODO()
+    val customerSet = HashSet<Customer>()
+    for (customer in customers) {
+        val orderPairs = customer.orders.partition { it.isDelivered }
+        if (orderPairs.first.size < orderPairs.second.size) {
+            customerSet.add(customer)
+        }
+    }
+    return customerSet
 }
 
 // Return the set of products ordered by every customer
