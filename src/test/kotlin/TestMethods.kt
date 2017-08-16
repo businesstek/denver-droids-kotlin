@@ -3,6 +3,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
+//TODO remove tests that we don't end up using so people don't have to trudge through this.
 class TestMethods {
     private fun testSendMessageToClient(client: Client?,
                                 message: String?,
