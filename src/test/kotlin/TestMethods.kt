@@ -4,7 +4,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class TestMethods {
-    fun testSendMessageToClient(client: Client?,
+    private fun testSendMessageToClient(client: Client?,
                                 message: String?,
                                 email: String? = null,
                                 shouldBeInvoked: Boolean = false) {
@@ -12,10 +12,8 @@ class TestMethods {
         sendMessageToClient(client, message, object : Mailer {
             override fun sendMessage(actualEmail: String, actualMessage: String) {
                 invoked = true
-                assertEquals(
-                        message, actualMessage, "The message is not as expected:")
-                assertEquals(
-                        email, actualEmail, "The email is not as expected:")
+                assertEquals(message, actualMessage, "The message is not as expected:")
+                assertEquals(email, actualEmail, "The email is not as expected:")
             }
         })
         assertEquals(shouldBeInvoked, invoked, "The function 'sendMessage' should${if (shouldBeInvoked) "" else "n't"} be invoked")
