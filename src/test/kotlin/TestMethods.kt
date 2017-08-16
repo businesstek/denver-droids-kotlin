@@ -21,26 +21,31 @@ class TestMethods {
         assertEquals(shouldBeInvoked, invoked, "The function 'sendMessage' should${if (shouldBeInvoked) "" else "n't"} be invoked")
     }
 
-    @Test fun everythingIsOk() {
+    @Test
+    fun everythingIsOk() {
         testSendMessageToClient(Client(PersonalInfo("bob@gmail.com")),
                 "Hi Bob! We have an awesome proposition for you...",
                 "bob@gmail.com",
                 true)
     }
 
-    @Test fun noMessage() {
+    @Test
+    fun noMessage() {
         testSendMessageToClient(Client(PersonalInfo("bob@gmail.com")), null)
     }
 
-    @Test fun noEmail() {
+    @Test
+    fun noEmail() {
         testSendMessageToClient(Client(PersonalInfo(null)), "Hi Bob! We have an awesome proposition for you...")
     }
 
-    @Test fun noPersonalInfo() {
+    @Test
+    fun noPersonalInfo() {
         testSendMessageToClient(Client(null), "Hi Bob! We have an awesome proposition for you...")
     }
 
-    @Test fun noClient() {
+    @Test
+    fun noClient() {
         testSendMessageToClient(null, "Hi Bob! We have an awesome proposition for you...")
     }
 
@@ -141,88 +146,108 @@ class TestMethods {
             Tokyo to listOf(asuka, riku)
     ).mapValues { it.value.map { name -> customers[name] } }
 
-    @Test fun testSetOfCustomers() {
+    @Test
+    fun testSetOfCustomers() {
         assertEquals(customers.values.toSet(), shop.getSetOfCustomers())
     }
 
-    @Test fun testCitiesCustomersAreFrom() {
+    @Test
+    fun testCitiesCustomersAreFrom() {
         assertEquals(setOf(Canberra, Vancouver, Budapest, Ankara, Tokyo), shop.getCitiesCustomersAreFrom())
     }
 
     /**
      * Returns the list of the customers who live in the city 'city'
      */
-    @Test fun testCustomersFromCity() {
+    @Test
+    fun testCustomersFromCity() {
         assertEquals(listOf(customers[lucas], customers[cooper]), shop.getCustomersFrom(Canberra))
     }
 
-    @Test fun testCustomerIsFromCity() {
+    @Test
+    fun testCustomerIsFromCity() {
         assertTrue(customers[lucas]!!.isFrom(Canberra))
         assertFalse(customers[lucas]!!.isFrom(Budapest))
     }
 
-    @Test fun testAllCustomersAreFromCity() {
+    @Test
+    fun testAllCustomersAreFromCity() {
         assertFalse(shop.checkAllCustomersAreFrom(Canberra))
     }
 
-    @Test fun testAnyCustomerIsFromCity() {
+    @Test
+    fun testAnyCustomerIsFromCity() {
         assertTrue(shop.hasCustomerFrom(Canberra))
     }
 
-    @Test fun testCountCustomersFromCity() {
+    @Test
+    fun testCountCustomersFromCity() {
         assertEquals(2, shop.countCustomersFrom(Canberra))
     }
 
-    @Test fun testAnyCustomerFromCity() {
+    @Test
+    fun testAnyCustomerFromCity() {
         assertEquals(customers[lucas], shop.findAnyCustomerFrom(Canberra))
         assertEquals(null, shop.findAnyCustomerFrom(City("Chicago")))
     }
 
-    @Test fun testGetOrderedProductsSet() {
+    @Test
+    fun testGetOrderedProductsSet() {
         assertEquals(setOf(idea), customers[reka]!!.orderedProducts)
     }
 
-    @Test fun testGetAllOrderedProducts() {
+    @Test
+    fun testGetAllOrderedProducts() {
         assertEquals(orderedProducts, shop.allOrderedProducts)
     }
 
-    @Test fun testCustomerWithMaximumNumberOfOrders() {
+    @Test
+    fun testCustomerWithMaximumNumberOfOrders() {
         assertEquals(customers[reka], shop.getCustomerWithMaximumNumberOfOrders())
     }
 
-    @Test fun testTheMostExpensiveOrderedProduct() {
+    @Test
+    fun testTheMostExpensiveOrderedProduct() {
         assertEquals(rubyMine, customers[nathan]!!.getMostExpensiveOrderedProduct())
     }
 
-    @Test fun testGetCustomersSortedByNumberOfOrders() {
+    @Test
+    fun testGetCustomersSortedByNumberOfOrders() {
         assertEquals(sortedCustomers, shop.getCustomersSortedByNumberOfOrders())
     }
 
-    @Test fun testGetTotalOrderPrice() {
+    @Test
+    fun testGetTotalOrderPrice() {
         assertEquals(148.0, customers[nathan]!!.getTotalOrderPrice())
     }
 
-    @Test fun testTotalPriceForRepeatedProducts() {
+    @Test
+    fun testTotalPriceForRepeatedProducts() {
         assertEquals(586.0, customers[lucas]!!.getTotalOrderPrice())
     }
 
-    @Test fun testZipNameAndCustomer() {
+    @Test
+    fun testZipNameAndCustomer() {
         assertEquals(customers.toList(), shop.zipNameAndCustomer())
     }
 
-    @Test fun testAssociateByNameAndCustomer() {
+    @Test
+    fun testAssociateByNameAndCustomer() {
         assertEquals(customers, shop.associateCustomersByName())
     }
 
-    @Test fun testGroupCustomersByCity() {
+    @Test
+    fun testGroupCustomersByCity() {
         assertEquals(groupedByCities, shop.groupCustomersByCity())
     }
 
-    @Test fun testGetCustomersWhoHaveMoreUndeliveredOrdersThanDelivered() {
+    @Test
+    fun testGetCustomersWhoHaveMoreUndeliveredOrdersThanDelivered() {
         assertEquals(setOf(customers[reka]), shop.getCustomersWithMoreUndeliveredOrdersThanDelivered())
     }
 
-    @Test fun testGetProductsOrderedByAllCustomers() {
+    @Test
+    fun testGetProductsOrderedByAllCustomers() {
         val testShop = shop("test shop for 'fold'") {
             customer(lucas, Canberra) {
                 order(idea)
@@ -236,7 +261,8 @@ class TestMethods {
         assertEquals(setOf(idea), testShop.getSetOfProductsOrderedByEveryCustomer())
     }
 
-    @Test fun testMostExpensiveDeliveredProduct() {
+    @Test
+    fun testMostExpensiveDeliveredProduct() {
         val testShop = shop("test shop for 'most expensive delivered product'") {
             customer(lucas, Canberra) {
                 order(isDelivered = false, products = idea)
@@ -246,37 +272,45 @@ class TestMethods {
         assertEquals(reSharper, testShop.customers[0].getMostExpensiveDeliveredProduct())
     }
 
-    @Test fun testNumberOfTimesEachProductWasOrdered() {
+    @Test
+    fun testNumberOfTimesEachProductWasOrdered() {
         assertEquals(4, shop.getNumberOfTimesProductWasOrdered(idea))
     }
 
-    @Test fun testNumberOfTimesEachProductWasOrderedForRepeatedProduct() {
+    @Test
+    fun testNumberOfTimesEachProductWasOrderedForRepeatedProduct() {
         assertEquals(
                 3, shop.getNumberOfTimesProductWasOrdered(reSharper), "A customer may order a product for several times")
     }
 
-    @Test fun testNumberOfTimesEachProductWasOrderedForRepeatedInOrderProduct() {
+    @Test
+    fun testNumberOfTimesEachProductWasOrderedForRepeatedInOrderProduct() {
         assertEquals(
                 3, shop.getNumberOfTimesProductWasOrdered(phpStorm), "An order may contain a particular product more than once")
     }
 
-    @Test fun testCollectionOfOneElement() {
+    @Test
+    fun testCollectionOfOneElement() {
         doTest(listOf("a"), listOf("a"))
     }
 
-    @Test fun testEmptyCollection() {
+    @Test
+    fun testEmptyCollection() {
         doTest(null, listOf())
     }
 
-    @Test fun testSimpleCollection() {
+    @Test
+    fun testSimpleCollection() {
         doTest(listOf("a", "c"), listOf("a", "bb", "c"))
     }
 
-    @Test fun testCollectionWithEmptyStrings() {
+    @Test
+    fun testCollectionWithEmptyStrings() {
         doTest(listOf("", "", "", ""), listOf("", "", "", "", "a", "bb", "ccc", "dddd"))
     }
 
-    @Test fun testCollectionWithTwoGroupsOfMaximalSize() {
+    @Test
+    fun testCollectionWithTwoGroupsOfMaximalSize() {
         doTest(listOf("a", "c"), listOf("a", "bb", "c", "dd"))
     }
 
@@ -305,88 +339,104 @@ class TestMethods {
     internal fun taxiOrder(driverIndex: Int, vararg passengerIndexes: Int, duration: Int = 10, distance: Double = 10.0, discount: Double? = null) =
             TaxiOrder(driver(driverIndex), passengers(*passengerIndexes), duration, distance, discount)
 
-    @Test fun testFakeDrivers() {
+    @Test
+    fun testFakeDrivers() {
         val park = taxiPark(driverIndexes = 1..3, passengerIndexes = 1..2,
                 orders = listOf(taxiOrder(driverIndex = 1, passengerIndexes = 1), taxiOrder(1, 2)))
         assertEquals(drivers(2, 3).toSet(), park.findFakeDrivers())
     }
 
-    @Test fun testNoFakeDrivers() {
+    @Test
+    fun testNoFakeDrivers() {
         val park = taxiPark(1..2, 1..2, taxiOrder(1, 1), taxiOrder(2, 2))
         assertTrue(park.findFakeDrivers().isEmpty())
     }
 
-    @Test fun testFaithfulPassengersMoreThanMin() {
+    @Test
+    fun testFaithfulPassengersMoreThanMin() {
         val park = taxiPark(1..1, 1..2,
                 taxiOrder(1, 1), taxiOrder(1, 2), taxiOrder(1, 2))
         assertEquals(passengers(2), park.findFaithfulPassengers(1))
     }
 
-    @Test fun testNoFaithfulPassengers() {
+    @Test
+    fun testNoFaithfulPassengers() {
         val park = taxiPark(1..1, 1..2,
                 taxiOrder(1, 1), taxiOrder(1, 2))
         assertTrue(park.findFaithfulPassengers(1).isEmpty())
     }
 
-    @Test fun testFaithfulPassenger() {
+    @Test
+    fun testFaithfulPassenger() {
         val park = taxiPark(1..2, 1..3,
                 taxiOrder(1, 2), taxiOrder(1, 2), taxiOrder(2, 2), taxiOrder(2, 2))
         assertEquals(passengers(2), park.findFaithfulPassengers(3))
     }
 
-    @Test fun testFaithfulPassengers() {
+    @Test
+    fun testFaithfulPassengers() {
         val park = taxiPark(1..3, 1..5,
                 taxiOrder(1, 1), taxiOrder(2, 1), taxiOrder(1, 4), taxiOrder(3, 4), taxiOrder(1, 5), taxiOrder(2, 5), taxiOrder(2, 2))
         assertEquals(passengers(1, 4, 5), park.findFaithfulPassengers(1))
     }
 
-    @Test fun testOnlyPair() {
+    @Test
+    fun testOnlyPair() {
         val park = taxiPark(1..1, 1..1, taxiOrder(1, 1), taxiOrder(1, 1))
         assertEquals(passengers(1), park.findFrequentPassengers(driver(1)))
     }
 
-    @Test fun testFrequentPassengers() {
+    @Test
+    fun testFrequentPassengers() {
         val park = taxiPark(1..2, 1..4, taxiOrder(1, 1), taxiOrder(1, 1), taxiOrder(1, 1, 3), taxiOrder(1, 3), taxiOrder(1, 2), taxiOrder(2, 2))
         assertEquals(passengers(1, 3), park.findFrequentPassengers(driver(1)))
     }
 
-    @Test fun testNoFrequentPassengers() {
+    @Test
+    fun testNoFrequentPassengers() {
         val park = taxiPark(1..2, 1..4, taxiOrder(1, 1), taxiOrder(1, 1), taxiOrder(1, 1, 3), taxiOrder(1, 3), taxiOrder(1, 2), taxiOrder(2, 2))
         assertTrue(park.findFrequentPassengers(driver(2)).isEmpty())
     }
 
-    @Test fun testSmartPassengers() {
+    @Test
+    fun testSmartPassengers() {
         val park = taxiPark(1..2, 1..2, taxiOrder(1, 1, discount = 0.1), taxiOrder(2, 2))
         assertEquals(passengers(1).toSet(), park.findSmartPassengers())
     }
 
-    @Test fun testMoreThenMajorityDiscountTrips() {
+    @Test
+    fun testMoreThenMajorityDiscountTrips() {
         val park = taxiPark(1..1, 1..1, taxiOrder(1, 1, discount = 0.1), taxiOrder(1, 1, discount = 0.2), taxiOrder(1, 1))
         assertEquals(passengers(1).toSet(), park.findSmartPassengers())
     }
 
-    @Test fun testLessThenMajorityDiscountTrips() {
+    @Test
+    fun testLessThenMajorityDiscountTrips() {
         val park = taxiPark(1..1, 1..1, taxiOrder(1, 1), taxiOrder(1, 1), taxiOrder(1, 1, discount = 0.2), taxiOrder(1, 1))
         assertTrue(park.findSmartPassengers().isEmpty())
     }
 
-    @Test fun testNoDurationInfo() {
+    @Test
+    fun testNoDurationInfo() {
         assertTrue(taxiPark(1..1, 1..1).findTheMostFrequentTripDurations().isEmpty())
     }
 
-    @Test fun testSeveralFrequent() {
+    @Test
+    fun testSeveralFrequent() {
         val park = taxiPark(1..1, 1..1, taxiOrder(1, 1, duration = 11), taxiOrder(1, 1, duration = 12),
                 taxiOrder(1, 1, duration = 25), taxiOrder(1, 1, duration = 26))
         assertEquals(listOf(10..19, 20..29), park.findTheMostFrequentTripDurations())
     }
 
-    @Test fun testTheMostFrequentTripDuration() {
+    @Test
+    fun testTheMostFrequentTripDuration() {
         val park = taxiPark(1..3, 1..5, taxiOrder(1, 1, duration = 10), taxiOrder(3, 4, duration = 30),
                 taxiOrder(1, 2, duration = 20), taxiOrder(2, 3, duration = 30))
         assertEquals(listOf(30..39), park.findTheMostFrequentTripDurations())
     }
 
-    @Test fun testParetoPrincipleSucceeds() {
+    @Test
+    fun testParetoPrincipleSucceeds() {
         // 20% of the drivers: 1
         // the profit of the first driver: 500
         // the profit of all: 620
@@ -396,14 +446,16 @@ class TestMethods {
         assertTrue(park.checkParetoPrinciple())
     }
 
-    @Test fun testRandomDriverIsTheBest() {
+    @Test
+    fun testRandomDriverIsTheBest() {
         // the same as before, the best driver is now #5
         val park = taxiPark(1..8, 1..8, taxiOrder(5, 1, duration = 250, distance = 250.0),
                 taxiOrder(2, 2), taxiOrder(3, 3), taxiOrder(4, 4), taxiOrder(6, 6), taxiOrder(7, 7), taxiOrder(8, 8))
         assertTrue(park.checkParetoPrinciple())
     }
 
-    @Test fun testSeveralBestDrivers() {
+    @Test
+    fun testSeveralBestDrivers() {
         // 20% of the drivers: 1, 10
         // the profit of 1, 10: 800
         // the profit of all: 940
@@ -415,14 +467,16 @@ class TestMethods {
         assertTrue(park.checkParetoPrinciple())
     }
 
-    @Test fun testNotEnoughDrivers() {
+    @Test
+    fun testNotEnoughDrivers() {
         // the first driver doesn't make up 20%
         val park = taxiPark(1..4, 1..4, taxiOrder(1, 1, duration = 110, distance = 110.0),
                 taxiOrder(2, 2), taxiOrder(3, 3), taxiOrder(4, 4))
         assertFalse(park.checkParetoPrinciple())
     }
 
-    @Test fun testParetoPrincipleFails() {
+    @Test
+    fun testParetoPrincipleFails() {
         // 20% of the drivers: 1
         // the profit of the first driver: 220
         // the profit of all: 300
@@ -432,7 +486,8 @@ class TestMethods {
         assertFalse(park.checkParetoPrinciple())
     }
 
-    @Test fun testExactly80Percent() {
+    @Test
+    fun testExactly80Percent() {
         // 20% of the drivers: 1
         // the profit of the first driver: 240
         // the profit of all: 300
