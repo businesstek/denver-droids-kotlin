@@ -127,7 +127,7 @@ fun Customer.getTotalOrderPrice(): Double {
 // Find the correspondence between customers and their names (as a list or pairs)
 // Hint: Zip
 fun Shop.zipNameAndCustomer(): List<Pair<String, Customer>> {
-    TODO()
+    return customers.map { it.name }.zip(customers)
 }
 
 // Find the correspondence between customers and their names (as a map)
