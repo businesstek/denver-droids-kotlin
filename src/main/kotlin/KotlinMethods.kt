@@ -160,7 +160,7 @@ fun Shop.getCustomersWithMoreUndeliveredOrdersThanDelivered(): Set<Customer> {
 fun Shop.getSetOfProductsOrderedByEveryCustomer(): Set<Product> {
     return customers.fold(allOrderedProducts, {
         orderedByAll, customer ->
-        TODO()
+        orderedByAll.intersect(customer.orderedProducts)
     })
 }
 
