@@ -4,12 +4,10 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class TestMethods {
-    fun testSendMessageToClient(
-            client: Client?,
-            message: String?,
-            email: String? = null,
-            shouldBeInvoked: Boolean = false
-    ) {
+    fun testSendMessageToClient(client: Client?,
+                                message: String?,
+                                email: String? = null,
+                                shouldBeInvoked: Boolean = false) {
         var invoked = false
         sendMessageToClient(client, message, object : Mailer {
             override fun sendMessage(actualEmail: String, actualMessage: String) {
