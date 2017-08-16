@@ -128,7 +128,7 @@ fun Shop.zipNameAndCustomer(): List<Pair<String, Customer>> {
 // Find the correspondence between customers and their names (as a map)
 // Hint: AssociateBy
 fun Shop.associateCustomersByName(): Map<String, Customer> {
-    TODO()
+    return this.customers.associateBy { it.name }
 }
 
 // Return a map of the customers living in each city
