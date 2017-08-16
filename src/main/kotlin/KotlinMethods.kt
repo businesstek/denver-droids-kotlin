@@ -134,7 +134,7 @@ fun Shop.associateCustomersByName(): Map<String, Customer> {
 // Return a map of the customers living in each city
 // Hint: GroupBy
 fun Shop.groupCustomersByCity(): Map<City, List<Customer>> {
-    TODO()
+    return this.customers.groupBy { it.city }
 }
 
 // Return customers who have more undelivered orders than delivered
